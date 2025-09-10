@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../modelos/Producto.php');
+require_once(__DIR__ . '/../modelos/Productos.php');
     class ProductoController {
         private $bd;
 
@@ -14,7 +14,7 @@ require_once(__DIR__ . '/../modelos/Producto.php');
             $vista = __DIR__ . '/../vistas/productos/listado.php';
             $productos = []; // Inicializar el array de productos
             // Obtener los productos de la base de datos
-            $productos = Producto::getListaProductos($this->bd);
+            $productos = Productos::getListaProductos($this->bd);
             require(__DIR__ . '/../vistas/layout.php');
         }
 
@@ -36,6 +36,7 @@ require_once(__DIR__ . '/../modelos/Producto.php');
             $descripcion = $_POST['descripcion'];
             $precio = $_POST['precio'];
             $stock = $_POST['stock'];
+            $categoria_id = $_POST['categoria_id'];
 
             // Manejar la subida de la imagen
             $imagen_url = null;
@@ -49,19 +50,20 @@ require_once(__DIR__ . '/../modelos/Producto.php');
             }
 
             // Crear el producto y guardarlo en la base de datos
-            require_once(__DIR__ . '/../modelos/Producto.php');
+            require_once(__DIR__ . '/../modelos/Productos.php');
             $producto = new Producto(
-                $nombreProducto,
+                $nombre_producto,
                 $descripcion,
                 $precio,
                 $stock,
                 $imagen_url,
+                $categoria_id,
                 0,
-                $this->bd
+                $this->bd,
             );
 
             // Guardar en la base de datos
-            if ($producto->guardar()>0) {
+            if ($productos->guardar()>0) {
                 header('Location: ' . BASE_URL . '/productos/listado');
                 exit;
             } else {
@@ -73,7 +75,7 @@ require_once(__DIR__ . '/../modelos/Producto.php');
 
         public function mostrar_detalle($id) {
             // Obtener el producto por su id
-            $producto = Producto::getProductoPorId($this->bd, $id);
+            $productos = Productos::getProductoPorId($this->bd, $id);
 
             // Si no existe, mostrar error o redirigir
             if (!$producto) {
